@@ -6,6 +6,7 @@ from jobTree.src.bioio import logger, setLoggingFromOptions
 from jobTree.scriptTree.stack import Stack
 from margin.mappers.last import Last, LastChain, LastRealign
 from margin.mappers.bwa import Bwa, BwaChain, BwaRealign
+from margin.mappers.graphmap import GraphMap, GraphMapChain, GraphMapRealign
 from margin.utils import pathToBaseNanoporeDir
 import cPecan.cPecanEm
 from cPecan.cPecanEm import addExpectationMaximisationOptions
@@ -21,6 +22,8 @@ def main():
                       default=False, action="store_true")
     ##Most people would not want to use the following, but I put them here for debug purposes
     parser.add_option("--bwa", dest="bwa", help="Use BWA instead of LAST", 
+                      default=False, action="store_true")
+    parser.add_option("--graphmap", dest="graphmap", help="Use GraphMap instead of LAST", 
                       default=False, action="store_true")
     parser.add_option("--noRealign", dest="noRealign", help="Don't run any realignment step", 
                       default=False, action="store_true")
@@ -70,12 +73,27 @@ def main():
     
     #Set the mapper
     if options.noRealign:
-        if options.noChain:
-            mapper = BwaChain if options.bwa else LastChain
-        else:
-            mapper = Bwa if options.bwa else Last
+        if options.noChain: # i.e. --noChain --noRealign
+            # mapper = Bwa if options.bwa else Last
+            mapper = Last;
+            if (options.bwa):
+                mapper = Bwa;
+            if (options.graphmap):
+                mapper = GraphMap;
+        else: # i.e. --noRealign
+            # mapper = BwaChain if options.bwa else LastChain
+            mapper = LastChain;
+            if (options.bwa):
+                mapper = BwaChain;
+            if (options.graphmap):
+                mapper = GraphMapChain;
     else:
-        mapper = BwaRealign if options.bwa else LastRealign
+        # mapper = BwaRealign if options.bwa else LastRealign
+        mapper = LastRealign;
+        if (options.bwa):
+            mapper = BwaRealign;
+        if (options.graphmap):
+            mapper = GraphMapRealign;
     
     #This line invokes jobTree  
     i = Stack(mapper(readFastqFile=args[0], referenceFastaFile=args[1], outputSamFile=args[2], 

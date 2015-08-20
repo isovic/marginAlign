@@ -18,7 +18,7 @@ fi
 export PYTHONPATH=${BASEDIR}/src:${BASEDIR}/submodules
 
 #Set the path to just the relevant directories
-export PATH=${BASEDIR}/submodules/sonLib/bin:${BASEDIR}/submodules/jobTree/bin:${BASEDIR}/submodules/bwa/:${BASEDIR}/submodules/last/src/:${BASEDIR}/submodules/last/scripts/:${PATH}
+export PATH=${BASEDIR}/submodules/sonLib/bin:${BASEDIR}/submodules/jobTree/bin:${BASEDIR}/submodules/bwa/:${BASEDIR}/submodules/last/src/:${BASEDIR}/submodules/last/scripts/:${BASEDIR}/submodules/graphmap/bin/Linux-x64/:${PATH}
 
 #Run described script
 python $@

@@ -37,3 +37,6 @@
 [submodule "submodules/cPecan"]
 	path = submodules/cPecan
 	url = https://github.com/benedictpaten/cPecan.git
+[submodule "submodules/graphmap"]
+	path = submodules/graphmap
+	url = https://github.com/isovic/graphmap.git

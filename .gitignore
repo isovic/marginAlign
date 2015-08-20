@@ -1,3 +1,7 @@
 tests/output/*
 testLog.txt
 testJobTree*
+*.pyc
+submodules/
+!submodules/README.txt
+!submodules/Makefile

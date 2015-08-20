@@ -36,6 +36,7 @@ class TestCase(unittest.TestCase):
         self.inputSamFileForMutatedReferenceFile = self.getFile("tests/inputBigMutations.sam") #This is aligned against the mutated reference
         self.inputSamFileForMutatedReferenceFileLast = self.getFile("tests/inputBigMutationsLast.sam") 
         self.inputSamFileForMutatedReferenceFileBwa = self.getFile("tests/inputBigMutationsBwa.sam") 
+        self.inputSamFileForMutatedReferenceFileGraphMap = self.getFile("tests/inputBigMutationsBwa.sam") 
         self.readFastqFile2 = self.getFile("tests/reads.fq")
         
         unittest.TestCase.setUp(self)
@@ -131,6 +132,12 @@ class TestCase(unittest.TestCase):
     def testMarginAlignBwaNoRealign(self):
         self.runMarginAlign(self.readFastqFile1, self.referenceFastaFile1, "--bwa --noRealign")
     
+    def testMarginAlignGraphMap(self):
+        self.runMarginAlign(self.readFastqFile1, self.referenceFastaFile1, "--graphmap")
+    
+    def testMarginAlignGraphMapNoRealign(self):
+        self.runMarginAlign(self.readFastqFile1, self.referenceFastaFile1, "--graphmap --noRealign")
+    
     #The following tests marginCaller
     
     def runMarginCaller(self, samFile, referenceFastaFile, mutationsFile, args=""):
@@ -165,6 +172,11 @@ class TestCase(unittest.TestCase):
         self.runMarginCaller(self.inputSamFileForMutatedReferenceFileBwa, 
                              self.mutatedReferenceFastaFile,
                              self.mutationsFile)
+
+    def testMarginCallerNoMarginGraphMap(self):
+        self.runMarginCaller(self.inputSamFileForMutatedReferenceFileGraphMap, 
+                             self.mutatedReferenceFastaFile,
+                             self.mutationsFile)
         
     def testMarginCallerNoMarginLastNoMargin(self):
         self.runMarginCaller(self.inputSamFileForMutatedReferenceFileLast, 
@@ -175,7 +187,11 @@ class TestCase(unittest.TestCase):
         self.runMarginCaller(self.inputSamFileForMutatedReferenceFileBwa, 
                              self.mutatedReferenceFastaFile,
                              self.mutationsFile, "--noMargin")
-    
+
+    def testMarginCallerNoMarginGraphMapNoMargin(self):
+        self.runMarginCaller(self.inputSamFileForMutatedReferenceFileGraphMap, 
+                             self.mutatedReferenceFastaFile,
+                             self.mutationsFile, "--noMargin")
     #Full integrative test that runs EM to train a model, then uses the resulting
     #model and alignment to calculate SNPs
     
