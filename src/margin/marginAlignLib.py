@@ -312,10 +312,23 @@ def realignCigarTargetFn(target, exonerateCigarStringFile, referenceSequenceName
         fastaWrite(tempReadFile, querySequenceName, querySequence)
         #Call to cPecanRealign
         loadHmm = nameValue("loadHmm", options.hmmFile)
-        system("echo %s | cPecanRealign %s %s --diagonalExpansion=10 \
-        --splitMatrixBiggerThanThis=3000 %s --gapGamma=%s --matchGamma=%s >> %s" % \
-               (exonerateCigarString[:-1], tempRefFile, tempReadFile, loadHmm, 
-                options.gapGamma, options.matchGamma, outputCigarFile))
+        try:
+            command = "echo %s | cPecanRealign %s %s --diagonalExpansion=10 \
+            --splitMatrixBiggerThanThis=3000 %s --gapGamma=%s --matchGamma=%s >> %s" % \
+                   (exonerateCigarString[:-1], tempRefFile, tempReadFile, loadHmm, 
+                    options.gapGamma, options.matchGamma, outputCigarFile);
+            system(command)
+            # target.logToMaster('[good] ' + command + '\n');
+        except Exception, e:            
+            target.logToMaster('Caught an exception! qname = "%s"\n' % querySequenceName);
+            target.logToMaster('len(exonerateCigarString[:-1]) = %d\n' % (len(exonerateCigarString[:-1])));
+            target.logToMaster('[bad] Command that caused the exception:\n');
+            target.logToMaster("echo %s | cPecanRealign %s %s --diagonalExpansion=10 --splitMatrixBiggerThanThis=3000 %s --gapGamma=%s --matchGamma=%s >> %s" % (exonerateCigarString[:-1], tempRefFile, tempReadFile, loadHmm, options.gapGamma, options.matchGamma, outputCigarFile));
+            target.logToMaster('\n');
+            target.logToMaster('\n');
+            target.logToMaster(str(e) + '\n');
+            target.logToMaster('\n');
+            continue;
 
 def realignSamFile3TargetFn(target, samFile, referenceFastaFile, 
                             outputSamFile, tempCigarFiles, options):
