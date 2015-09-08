@@ -6,7 +6,7 @@ from jobTree.src.bioio import logger, setLoggingFromOptions
 from jobTree.scriptTree.stack import Stack
 from margin.mappers.last import Last, LastChain, LastRealign
 from margin.mappers.bwa import Bwa, BwaChain, BwaRealign
-from margin.mappers.graphmap import GraphMap, GraphMapChain, GraphMapRealign
+from margin.mappers.graphmap import GraphMap, GraphMapChain, GraphMapRealign, GraphMapAnchor, GraphMapAnchorChain, GraphMapAnchorRealign
 from margin.utils import pathToBaseNanoporeDir
 import cPecan.cPecanEm
 from cPecan.cPecanEm import addExpectationMaximisationOptions
@@ -24,6 +24,8 @@ def main():
     parser.add_option("--bwa", dest="bwa", help="Use BWA instead of LAST", 
                       default=False, action="store_true")
     parser.add_option("--graphmap", dest="graphmap", help="Use GraphMap instead of LAST", 
+                      default=False, action="store_true")
+    parser.add_option("--graphmapanchor", dest="graphmapanchor", help="Use GraphMap with anchor alignment instead of LAST", 
                       default=False, action="store_true")
     parser.add_option("--noRealign", dest="noRealign", help="Don't run any realignment step", 
                       default=False, action="store_true")
@@ -80,6 +82,8 @@ def main():
                 mapper = Bwa;
             if (options.graphmap):
                 mapper = GraphMap;
+            if (options.graphmapanchor):
+                mapper = GraphMapAnchor;
         else: # i.e. --noRealign
             # mapper = BwaChain if options.bwa else LastChain
             mapper = LastChain;
@@ -87,6 +91,8 @@ def main():
                 mapper = BwaChain;
             if (options.graphmap):
                 mapper = GraphMapChain;
+            if (options.graphmapanchor):
+                mapper = GraphMapAnchorChain;
     else:
         # mapper = BwaRealign if options.bwa else LastRealign
         mapper = LastRealign;
@@ -94,6 +100,8 @@ def main():
             mapper = BwaRealign;
         if (options.graphmap):
             mapper = GraphMapRealign;
+        if (options.graphmapanchor):
+            mapper = GraphMapAnchorRealign;
     
     #This line invokes jobTree  
     i = Stack(mapper(readFastqFile=args[0], referenceFastaFile=args[1], outputSamFile=args[2], 
